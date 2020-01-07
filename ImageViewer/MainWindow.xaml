@@ -1,0 +1,55 @@
+﻿<Window x:Class="ImageViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Name="mainWindow" Title="ImageViewer"
+        mc:Ignorable="d" WindowStyle="None" WindowState="Maximized" Width="1024" Height="768"
+        AllowsTransparency="True" AllowDrop="True" KeyDown="MainWindow_KeyDown" Closing="MainWindow_Closing">
+    <Window.Background>
+        <SolidColorBrush Opacity="0.9" Color="Black"/>
+    </Window.Background>
+    <!-- MAIN GRID -->
+    <Grid x:Name="mainGrid" Margin="5" UseLayoutRounding="True">
+        <!-- IMAGE BORDER -->
+        <Border x:Name="border" ClipToBounds="True">
+            <Grid>
+                <!-- IMAGE -->
+                <Image x:Name="ImagePlayer" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                <!-- MEDIA - GIF -->
+                <MediaElement Name="GIFPlayer" LoadedBehavior="Manual" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center" UnloadedBehavior="Manual">
+                </MediaElement>
+            </Grid>
+        </Border>
+        <!-- MINIMIZE -->
+        <Button x:Name="MinimizeButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Minimize" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="0,0,41,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="MinimizeButton_Click">
+            <Path Fill="{Binding ElementName=MinimizeButton, Path=Foreground}" Margin="0,15,0,0" Width="18" Data="{StaticResource MinimizeIcon}" Stretch="Uniform"/>
+        </Button>
+        <!-- CLOSE -->
+        <Button x:Name="CloseButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Close" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" HorizontalAlignment="Right" VerticalAlignment="Top" Click="CloseButton_Click">
+            <Path Fill="{Binding ElementName=CloseButton, Path=Foreground}" Width="16" Data="{StaticResource CloseIcon}" Stretch="Uniform"/>
+        </Button>
+        <!-- ZOOM IN -->
+        <Button x:Name="ZoomInButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Zoom In" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="1,-90,0,0" HorizontalAlignment="Right" Click="ZoomInButton_Click">
+            <Path Fill="{Binding ElementName=ZoomInButton, Path=Foreground}" Opacity="0.9" Height="16" Data="{StaticResource ZoomInIcon}" Stretch="Uniform"/>
+        </Button>
+        <!-- ZOOM RESET -->
+        <Button x:Name="ZoomResetButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Reset Zoom" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="1,0,0,0" HorizontalAlignment="Right">
+            <Path Fill="{Binding ElementName=ZoomResetButton, Path=Foreground}" Opacity="0.9" Height="20" Data="{StaticResource ZoomResetIcon}" Stretch="Uniform"/>
+        </Button>
+        <!-- ZOOM OUT -->
+        <Button x:Name="ZoomOutButton"  Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Zoom Out" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="1,90,0,0" HorizontalAlignment="Right" Click="ZoomOutButton_Click">
+            <Path Fill="{Binding ElementName=ZoomOutButton, Path=Foreground}" Opacity="0.9" Height="16" Data="{StaticResource ZoomOutIcon}" Stretch="Uniform"/>
+        </Button>
+
+        <!-- ROTATE 90° -->
+        <Button x:Name="RotateButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Rotate Image" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="0,0,0,45" HorizontalAlignment="Left" Click="RotateButton_Click">
+            <Path Fill="{Binding ElementName=RotateButton, Path=Foreground}" Opacity="0.9" Width="32" Data="{StaticResource RotateRightIcon}" Stretch="Uniform"/>
+        </Button>
+        <!-- RECYCLE -->
+        <Button x:Name="DeleteButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Delete to Recycle Bin" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="0,45,0,0" HorizontalAlignment="Left" Click="DeleteButton_Click">
+            <Path Fill="{Binding ElementName=DeleteButton, Path=Foreground}" Opacity="0.9" Height="32" Data="{StaticResource RecycleIcon}" Stretch="Uniform"/>
+        </Button>
+    </Grid>
+</Window>
