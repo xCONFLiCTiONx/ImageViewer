@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace ImageViewer
@@ -9,9 +8,6 @@ namespace ImageViewer
     {
         public static class FileAssociations
         {
-            [DllImport("Shell32.dll")]
-            public static extern int SHChangeNotify(int eventId, int flags, IntPtr item1, IntPtr item2);
-
             public const int SHCNE_ASSOCCHANGED = 0x8000000;
             public const int SHCNF_FLUSH = 0x1000;
 
@@ -37,12 +33,12 @@ namespace ImageViewer
                 {
                     SetKeyValue(ext, "ImageViewer");
                 }
-                
+
                 SetKeyValue("ImageViewer", "ImageFile");
                 SetKeyValue(@"ImageViewer\DefaultIcon", "\"" + Application.ExecutablePath + "\"");
                 SetKeyValue(@"ImageViewer\shell\open\command", "\"" + Application.ExecutablePath + "\" \"%1\"");
 
-                SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_FLUSH, IntPtr.Zero, IntPtr.Zero);
+                NativeMethods.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_FLUSH, IntPtr.Zero, IntPtr.Zero);
             }
 
             private static void SetKeyValue(string keyPath, string value)

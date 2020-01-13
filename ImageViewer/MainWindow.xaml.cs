@@ -16,7 +16,7 @@ using Point = System.Windows.Point;
 
 namespace ImageViewer
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisposable
     {
         #region Variables
 
@@ -362,8 +362,10 @@ namespace ImageViewer
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             EventSubs(false);
-
-            Environment.Exit(0);
+            this.Opacity = 0;
+            this.Hide();
+            this.ShowInTaskbar = false;
+            Application.Current.Shutdown();
         }
 
         private void RotateButton_Click(object sender, RoutedEventArgs e)
@@ -422,7 +424,7 @@ namespace ImageViewer
                   .TransformBounds(new Rect(element.RenderSize)).Width >= 20000) return;
 
             Matrix m = element.RenderTransform.Value;
-            
+
             if (isButton)
             {
                 m.Scale(1.5, 1.5);
@@ -485,7 +487,7 @@ namespace ImageViewer
             {
                 if (element.TransformToAncestor(border)
        .TransformBounds(new Rect(element.RenderSize)).Width <= 200) return;
-                
+
                 m.Scale(1 / 1.1, 1 / 1.1);
             }
 
@@ -555,5 +557,22 @@ namespace ImageViewer
         }
 
         #endregion Events
+
+        #region Dispose
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (watcher != null)
+                    watcher.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion Dispose
     }
 }

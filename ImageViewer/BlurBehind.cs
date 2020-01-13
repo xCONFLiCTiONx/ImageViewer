@@ -1,13 +1,11 @@
-﻿using System;
+﻿using ImageViewer;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
 public static class BlurBehind
 {
-    [DllImport("user32.dll")]
-    internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
-
     [StructLayout(LayoutKind.Sequential)]
     internal struct WindowCompositionAttributeData
     {
@@ -57,7 +55,7 @@ public static class BlurBehind
         data.SizeOfData = accentStructSize;
         data.Data = accentPtr;
 
-        SetWindowCompositionAttribute(windowHelper.Handle, ref data);
+        NativeMethods.SetWindowCompositionAttribute(windowHelper.Handle, ref data);
 
         Marshal.FreeHGlobal(accentPtr);
     }
