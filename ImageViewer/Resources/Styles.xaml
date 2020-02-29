@@ -24,10 +24,10 @@
                             <Setter TargetName="visibilityGrid" Property="Visibility" Value="Visible"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#E5171717"/>
+                            <Setter Property="Background" Value="#E55D5D5D"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#BF212121"/>
+                            <Setter Property="Background" Value="#BF000000"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

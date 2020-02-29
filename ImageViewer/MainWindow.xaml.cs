@@ -30,6 +30,9 @@ namespace ImageViewer
         List<string> ImageList = null;
         public string CurrentImage = null;
         FileSystemWatcher watcher;
+        FileStream mediaStream;
+        Bitmap bitmap;
+        BitmapSource bitmapSource;
 
         #endregion Variables
 
@@ -168,7 +171,7 @@ namespace ImageViewer
 
             ResetZoom();
 
-            using (FileStream mediaStream = new FileStream(CurrentImage, FileMode.Open, FileAccess.Read))
+            using (mediaStream = new FileStream(CurrentImage, FileMode.Open, FileAccess.ReadWrite))
             {
                 if (Path.GetExtension(CurrentImage) == ".gif")
                 {
@@ -197,9 +200,9 @@ namespace ImageViewer
                     GIFPlayer.Close();
                     GIFPlayer.Source = null;
 
-                    Bitmap bitmap = new Bitmap(mediaStream);
+                    bitmap = new Bitmap(mediaStream);
 
-                    var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                    bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
 
                     ImagePlayer.Source = bitmapSource;
 
@@ -372,37 +375,36 @@ namespace ImageViewer
         {
             watcher.EnableRaisingEvents = false;
 
-            using (Image img = Image.FromFile(CurrentImage))
+            Bitmap img = (Bitmap)Bitmap.FromFile(CurrentImage);
+
+            img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+
+            if (Path.GetExtension(CurrentImage).ToLower() == ".jpg")
             {
-                img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-
-                if (Path.GetExtension(CurrentImage).ToLower() == ".jpg")
-                {
-                    img.Save(CurrentImage, ImageFormat.Jpeg);
-                }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".png")
-                {
-                    img.Save(CurrentImage, ImageFormat.Png);
-                }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".gif")
-                {
-                    MessageBox.Show("This program cannot save gif files. If you want to rotate this image and save it, use a program that is capable of properly saving gif files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".bmp")
-                {
-                    img.Save(CurrentImage, ImageFormat.Bmp);
-                }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".ico")
-                {
-                    MessageBox.Show("This program cannot save icon files. If you want to rotate this image and save it, use a program that is capable of properly saving icon files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".tiff")
-                {
-                    img.Save(CurrentImage, ImageFormat.Tiff);
-                }
-
-                OpenImage();
+                img.Save(CurrentImage, ImageFormat.Jpeg);
             }
+            else if (Path.GetExtension(CurrentImage).ToLower() == ".png")
+            {
+                img.Save(CurrentImage, ImageFormat.Png);
+            }
+            else if (Path.GetExtension(CurrentImage).ToLower() == ".gif")
+            {
+                MessageBox.Show("This program cannot save gif files. If you want to rotate this image and save it, use a program that is capable of properly saving gif files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (Path.GetExtension(CurrentImage).ToLower() == ".bmp")
+            {
+                img.Save(CurrentImage, ImageFormat.Bmp);
+            }
+            else if (Path.GetExtension(CurrentImage).ToLower() == ".ico")
+            {
+                MessageBox.Show("This program cannot save icon files. If you want to rotate this image and save it, use a program that is capable of properly saving icon files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else if (Path.GetExtension(CurrentImage).ToLower() == ".tiff")
+            {
+                img.Save(CurrentImage, ImageFormat.Tiff);
+            }
+
+            OpenImage();
 
             watcher.EnableRaisingEvents = true;
         }
