@@ -75,7 +75,7 @@ namespace ImageViewer
                 SetAssociations();
             }
 
-            var args = Environment.GetCommandLineArgs().Length;
+            int args = Environment.GetCommandLineArgs().Length;
             if (args == 1 && Default.SetDefaults)
             {
                 MessageBox.Show("This program is meant to be opened by images with this app being the default handler for common image types.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);

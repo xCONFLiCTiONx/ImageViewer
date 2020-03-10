@@ -9,6 +9,74 @@
     <Window.Background>
         <SolidColorBrush Opacity="0.9" Color="Black"/>
     </Window.Background>
+    <Window.Resources>
+        <!-- Button Image LEFT Styles -->
+        <Style x:Key="CustomLEFTButton" TargetType="Button">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Background" Value="#7F000000"/>
+            <Setter Property="Foreground" Value="#FFF5F5F5"/>
+            <Setter Property="BorderBrush" Value="#BF191919"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border x:Name="visibilityGrid" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Grid Background="#7F000000" Visibility="Hidden"/>
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
+                            </Grid.Effect>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="visibilityGrid">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Resources/LEFT_HOVER.png" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Button Image RIGHT Styles -->
+        <Style x:Key="CustomRIGHTButton" TargetType="Button">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Background" Value="#7F000000"/>
+            <Setter Property="Foreground" Value="#FFF5F5F5"/>
+            <Setter Property="BorderBrush" Value="#BF191919"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border x:Name="visibilityGrid" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" Padding="0" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Grid.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
+                            </Grid.Effect>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="visibilityGrid">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Resources/RIGHT_HOVER.png" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#BF000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <!-- MAIN GRID -->
     <Grid x:Name="mainGrid" Margin="5" UseLayoutRounding="True">
         <!-- IMAGE BORDER -->
@@ -51,5 +119,13 @@
         <Button x:Name="DeleteButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Delete to Recycle Bin" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="0,45,0,0" HorizontalAlignment="Left" Click="DeleteButton_Click">
             <Path Fill="{Binding ElementName=DeleteButton, Path=Foreground}" Opacity="0.9" Height="32" Data="{StaticResource RecycleIcon}" Stretch="Uniform"/>
         </Button>
+        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Button x:Name="LeftButton" Style="{StaticResource CustomLEFTButton}" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent" MouseDown="LeftButton_MouseDown">
+                <Image Source="Resources\LEFT.png" Height="32" Width="32"  Opacity="0.7" MouseDown="LeftButton_MouseDown"/>
+            </Button>
+            <Button x:Name="RightButton" Style="{StaticResource CustomRIGHTButton}" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" MouseDown="RightButton_MouseDown">
+                <Image Source="Resources\RIGHT.png" Height="32" Width="32" Opacity="0.7" MouseDown="RightButton_MouseDown"/>
+            </Button>
+        </DockPanel>
     </Grid>
 </Window>

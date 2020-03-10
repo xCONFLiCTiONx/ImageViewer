@@ -25,7 +25,7 @@ namespace ImageViewer
         bool mediaPaused = false;
         private Point origin;
         private Point start;
-        private string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tiff" };
+        private readonly string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tiff" };
         public static string[] Args = Environment.GetCommandLineArgs();
         List<string> ImageList = null;
         public string CurrentImage = null;
@@ -63,13 +63,15 @@ namespace ImageViewer
 
         private void ImageFolderWatcher()
         {
-            watcher = new FileSystemWatcher();
-            watcher.Path = Path.GetDirectoryName(CurrentImage);
+            watcher = new FileSystemWatcher
+            {
+                Path = Path.GetDirectoryName(CurrentImage),
 
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-               | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+               | NotifyFilters.FileName | NotifyFilters.DirectoryName,
 
-            watcher.Filter = "*.*";
+                Filter = "*.*"
+            };
 
             watcher.Changed += new FileSystemEventHandler(OnChanged);
             watcher.Created += new FileSystemEventHandler(OnChanged);
@@ -153,11 +155,11 @@ namespace ImageViewer
             {
                 ImageList.Clear();
             }
-            Func<string, object> convert = str =>
+            object convert(string str)
             {
                 try { return int.Parse(str); }
                 catch { return str; }
-            };
+            }
 
             IOrderedEnumerable<string> sortedList = Directory.GetFiles(Path.GetDirectoryName(CurrentImage), "*.*").OrderBy(str => Regex.Split(str.Replace(" ", ""), "([0-9]+)").Select(convert),
                 new EnumerableComparer<object>());
@@ -171,7 +173,7 @@ namespace ImageViewer
 
             ResetZoom();
 
-            using (mediaStream = new FileStream(CurrentImage, FileMode.Open, FileAccess.ReadWrite))
+            using (mediaStream = new FileStream(CurrentImage, FileMode.Open, FileAccess.Read))
             {
                 if (Path.GetExtension(CurrentImage) == ".gif")
                 {
@@ -224,6 +226,16 @@ namespace ImageViewer
 
                 GIFPlayer.Play();
             }
+        }
+
+        private void LeftButton_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            SetCurrentImage(true);
+        }
+
+        private void RightButton_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            SetCurrentImage(false);
         }
 
         #endregion Image Control
@@ -373,38 +385,45 @@ namespace ImageViewer
 
         private void RotateButton_Click(object sender, RoutedEventArgs e)
         {
-            watcher.EnableRaisingEvents = false;
+            try
+            {
+                watcher.EnableRaisingEvents = false;
 
-            Bitmap img = (Bitmap)Bitmap.FromFile(CurrentImage);
+                Bitmap img = (Bitmap)Bitmap.FromFile(CurrentImage);
 
-            img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                img.RotateFlip(RotateFlipType.Rotate90FlipNone);
 
-            if (Path.GetExtension(CurrentImage).ToLower() == ".jpg")
-            {
-                img.Save(CurrentImage, ImageFormat.Jpeg);
-            }
-            else if (Path.GetExtension(CurrentImage).ToLower() == ".png")
-            {
-                img.Save(CurrentImage, ImageFormat.Png);
-            }
-            else if (Path.GetExtension(CurrentImage).ToLower() == ".gif")
-            {
-                MessageBox.Show("This program cannot save gif files. If you want to rotate this image and save it, use a program that is capable of properly saving gif files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else if (Path.GetExtension(CurrentImage).ToLower() == ".bmp")
-            {
-                img.Save(CurrentImage, ImageFormat.Bmp);
-            }
-            else if (Path.GetExtension(CurrentImage).ToLower() == ".ico")
-            {
-                MessageBox.Show("This program cannot save icon files. If you want to rotate this image and save it, use a program that is capable of properly saving icon files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else if (Path.GetExtension(CurrentImage).ToLower() == ".tiff")
-            {
-                img.Save(CurrentImage, ImageFormat.Tiff);
-            }
+                if (Path.GetExtension(CurrentImage).ToLower() == ".jpg")
+                {
+                    img.Save(CurrentImage, ImageFormat.Jpeg);
+                }
+                else if (Path.GetExtension(CurrentImage).ToLower() == ".png")
+                {
+                    img.Save(CurrentImage, ImageFormat.Png);
+                }
+                else if (Path.GetExtension(CurrentImage).ToLower() == ".gif")
+                {
+                    MessageBox.Show("This program cannot save gif files. If you want to rotate this image and save it, use a program that is capable of properly saving gif files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (Path.GetExtension(CurrentImage).ToLower() == ".bmp")
+                {
+                    img.Save(CurrentImage, ImageFormat.Bmp);
+                }
+                else if (Path.GetExtension(CurrentImage).ToLower() == ".ico")
+                {
+                    MessageBox.Show("This program cannot save icon files. If you want to rotate this image and save it, use a program that is capable of properly saving icon files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (Path.GetExtension(CurrentImage).ToLower() == ".tiff")
+                {
+                    img.Save(CurrentImage, ImageFormat.Tiff);
+                }
 
-            OpenImage();
+                OpenImage();
+            }
+            catch
+            {
+                MessageBox.Show("An error occurred. Please make sure that the file isn't set to Read-only.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
 
             watcher.EnableRaisingEvents = true;
         }
