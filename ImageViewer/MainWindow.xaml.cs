@@ -25,7 +25,7 @@ namespace ImageViewer
         bool mediaPaused = false;
         private Point origin;
         private Point start;
-        private readonly string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tiff" };
+        private readonly string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tiff", ".webp" };
         public static string[] Args = Environment.GetCommandLineArgs();
         List<string> ImageList = null;
         public string CurrentImage = null;
@@ -42,6 +42,14 @@ namespace ImageViewer
         public MainWindow()
         {
             InitializeComponent();
+
+            mainWindow.MaxHeight = (SystemParameters.PrimaryScreenHeight);
+            mainWindow.MaxWidth = (SystemParameters.PrimaryScreenWidth);
+            mainWindow.Height = mainWindow.MaxHeight;
+            mainWindow.Width = mainWindow.MaxWidth;
+
+            mainWindow.Top = 0;
+            mainWindow.Left = 0;
 
             EventSubs(true);
 
@@ -255,6 +263,8 @@ namespace ImageViewer
         {
             if (Startup)
             {
+                PreviewMouseDown += MainWindow_PreviewMouseDown;
+
                 mainWindow.MouseWheel += MainWindow_MouseWheel;
                 mainWindow.MouseRightButtonDown += delegate { ResetZoom(); };
 
@@ -266,8 +276,8 @@ namespace ImageViewer
                 ImagePlayer.MouseLeftButtonUp += ImagePlayer_MouseLeftButtonUp;
                 ImagePlayer.MouseMove += ImagePlayer_MouseMove;
 
-                ImagePlayer.MaxHeight = SystemParameters.PrimaryScreenHeight * 85 / 100;
-                ImagePlayer.MaxWidth = SystemParameters.PrimaryScreenWidth * 85 / 100;
+                ImagePlayer.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight * 85 / 100;
+                ImagePlayer.MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth * 85 / 100;
 
                 // GIFPlayer
                 GIFPlayer.MouseRightButtonDown += delegate { ResetZoom(); };
@@ -275,8 +285,8 @@ namespace ImageViewer
                 GIFPlayer.MouseLeftButtonUp += GIFPlayer_MouseLeftButtonUp;
                 GIFPlayer.MouseMove += GIFPlayer_MouseMove;
 
-                GIFPlayer.MaxHeight = SystemParameters.PrimaryScreenHeight * 85 / 100;
-                GIFPlayer.MaxWidth = SystemParameters.PrimaryScreenWidth * 85 / 100;
+                GIFPlayer.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight * 85 / 100;
+                GIFPlayer.MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth * 85 / 100;
             }
             else
             {
@@ -389,7 +399,7 @@ namespace ImageViewer
             {
                 watcher.EnableRaisingEvents = false;
 
-                Bitmap img = (Bitmap)Bitmap.FromFile(CurrentImage);
+                Bitmap img = (Bitmap)Image.FromFile(CurrentImage);
 
                 img.RotateFlip(RotateFlipType.Rotate90FlipNone);
 
@@ -416,6 +426,10 @@ namespace ImageViewer
                 else if (Path.GetExtension(CurrentImage).ToLower() == ".tiff")
                 {
                     img.Save(CurrentImage, ImageFormat.Tiff);
+                }
+                else if (Path.GetExtension(CurrentImage).ToLower() == ".webp")
+                {
+                    MessageBox.Show("This program cannot save webp files. If you want to rotate this image and save it, use a program that is capable of properly saving webp files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
 
                 OpenImage();
@@ -448,7 +462,7 @@ namespace ImageViewer
 
             if (isButton)
             {
-                m.Scale(1.5, 1.5);
+                m.Scale(1.2, 1.2);
             }
             else
             {
@@ -461,13 +475,13 @@ namespace ImageViewer
         private void ZoomOut(bool isButton)
         {
             if (element.TransformToAncestor(border)
-          .TransformBounds(new Rect(element.RenderSize)).Width <= 200) return;
+          .TransformBounds(new Rect(element.RenderSize)).Width <= 50) return;
 
             Matrix m = element.RenderTransform.Value;
 
             if (isButton)
             {
-                m.Scale(1 / 1.5, 1 / 1.5);
+                m.Scale(1 / 1.2, 1 / 1.2);
             }
             else
             {
@@ -475,6 +489,14 @@ namespace ImageViewer
             }
 
             element.RenderTransform = new MatrixTransform(m);
+        }
+
+        private void MainWindow_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Middle)
+            {
+                ResetZoom();
+            }
         }
 
         private void ResetZoom()
@@ -507,7 +529,7 @@ namespace ImageViewer
             else
             {
                 if (element.TransformToAncestor(border)
-       .TransformBounds(new Rect(element.RenderSize)).Width <= 200) return;
+       .TransformBounds(new Rect(element.RenderSize)).Width <= 50) return;
 
                 m.Scale(1 / 1.1, 1 / 1.1);
             }

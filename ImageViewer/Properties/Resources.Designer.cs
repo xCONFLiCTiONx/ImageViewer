@@ -83,6 +83,16 @@ namespace ImageViewer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap LEFT_DOWN {
+            get {
+                object obj = ResourceManager.GetObject("LEFT_DOWN", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap LEFT_HOVER {
             get {
                 object obj = ResourceManager.GetObject("LEFT_HOVER", resourceCulture);
@@ -96,6 +106,16 @@ namespace ImageViewer.Properties {
         internal static System.Drawing.Bitmap RIGHT {
             get {
                 object obj = ResourceManager.GetObject("RIGHT", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RIGHT_DOWN {
+            get {
+                object obj = ResourceManager.GetObject("RIGHT_DOWN", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

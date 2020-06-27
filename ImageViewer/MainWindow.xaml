@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Name="mainWindow" Title="ImageViewer"
-        mc:Ignorable="d" WindowStyle="None" WindowState="Maximized" Width="1024" Height="768"
+        mc:Ignorable="d" WindowStyle="None" WindowState="Normal" Width="1024" Height="768"
         AllowsTransparency="True" AllowDrop="True" KeyDown="MainWindow_KeyDown" Closing="MainWindow_Closing">
     <Window.Background>
         <SolidColorBrush Opacity="0.9" Color="Black"/>
@@ -34,6 +34,13 @@
                                 <Setter Property="Background" TargetName="visibilityGrid">
                                     <Setter.Value>
                                         <ImageBrush ImageSource="Resources/LEFT_HOVER.png" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" TargetName="visibilityGrid">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Resources/LEFT_DOWN.png" />
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
@@ -69,7 +76,11 @@
                                 </Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#BF000000"/>
+                                <Setter Property="Background" TargetName="visibilityGrid">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Resources/RIGHT_DOWN.png" />
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -78,7 +89,7 @@
         </Style>
     </Window.Resources>
     <!-- MAIN GRID -->
-    <Grid x:Name="mainGrid" Margin="5" UseLayoutRounding="True">
+    <Grid x:Name="mainGrid" Margin="0" UseLayoutRounding="True">
         <!-- IMAGE BORDER -->
         <Border x:Name="border" ClipToBounds="True">
             <Grid>
