@@ -43,6 +43,10 @@ namespace ImageViewer
         {
             InitializeComponent();
 
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+
             mainWindow.MaxHeight = (SystemParameters.PrimaryScreenHeight);
             mainWindow.MaxWidth = (SystemParameters.PrimaryScreenWidth);
             mainWindow.Height = mainWindow.MaxHeight;
@@ -61,6 +65,16 @@ namespace ImageViewer
 
                 BuildImageList();
             }
+        }
+
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.Exception.Message);
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show(e.ExceptionObject.ToString());
         }
 
         #endregion Main Entry
@@ -93,6 +107,13 @@ namespace ImageViewer
 
             if (extensions.Any(ext.Equals))
             {
+                Dispatcher.Invoke(() => SetCurrentImage());
+
+                if (CurrentImage == e.FullPath)
+                {
+                    Dispatcher.Invoke(() => SetCurrentImage(true));
+                }
+
                 Dispatcher.Invoke(() => BuildImageList());
             }
         }
