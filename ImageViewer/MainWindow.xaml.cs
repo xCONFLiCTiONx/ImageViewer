@@ -60,8 +60,6 @@ namespace ImageViewer
                 ImageFolderWatcher();
 
                 BuildImageList();
-
-                OpenImage();
             }
         }
 
@@ -91,21 +89,11 @@ namespace ImageViewer
 
         private void OnChanged(object source, FileSystemEventArgs e)
         {
-            FilterExtensions(e.FullPath);
-        }
-
-        private void OnRenamed(object source, RenamedEventArgs e)
-        {
-            FilterExtensions(e.FullPath);
-        }
-
-        private void FilterExtensions(string filename)
-        {
-            var ext = (Path.GetExtension(filename) ?? string.Empty).ToLower();
+            var ext = (Path.GetExtension(e.FullPath) ?? string.Empty).ToLower();
 
             if (extensions.Any(ext.Equals))
             {
-                BuildImageList();
+                Dispatcher.Invoke(() => BuildImageList());
             }
         }
 
@@ -113,7 +101,7 @@ namespace ImageViewer
 
         #region Image Control
 
-        private void SetCurrentImage(bool Reverse)
+        private void SetCurrentImage(bool Reverse = false)
         {
             try
             {
@@ -163,6 +151,7 @@ namespace ImageViewer
             {
                 ImageList.Clear();
             }
+
             object convert(string str)
             {
                 try { return int.Parse(str); }
@@ -173,10 +162,17 @@ namespace ImageViewer
                 new EnumerableComparer<object>());
 
             ImageList = sortedList.Where(item => extensions.Contains(Path.GetExtension(item))).ToList();
+
+            OpenImage();
         }
 
         public void OpenImage()
         {
+            if (ImageList.Count == 0)
+            {
+                Application.Current.Shutdown();
+            }
+
             if (CurrentImage == LastImage) return;
 
             ResetZoom();
@@ -243,7 +239,7 @@ namespace ImageViewer
 
         private void RightButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            SetCurrentImage(false);
+            SetCurrentImage();
         }
 
         #endregion Image Control
@@ -329,7 +325,7 @@ namespace ImageViewer
                     SetCurrentImage(true);
                     break;
                 case Key.Right:
-                    SetCurrentImage(false);
+                    SetCurrentImage();
                     break;
                 case Key.Up:
                     ZoomIn(false);
@@ -364,9 +360,11 @@ namespace ImageViewer
         {
             try
             {
+                watcher.EnableRaisingEvents = false;
+
                 string FileToDelete = CurrentImage;
 
-                SetCurrentImage(false);
+                SetCurrentImage();
 
                 if (CurrentImage == FileToDelete)
                 {
@@ -376,6 +374,8 @@ namespace ImageViewer
                 FileSystem.DeleteFile(FileToDelete, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
 
                 BuildImageList();
+
+                watcher.EnableRaisingEvents = true;
             }
             catch (Exception ex)
             {
@@ -596,7 +596,7 @@ namespace ImageViewer
 
             EventSubs(false);
 
-            Environment.Exit(0);
+            Application.Current.Shutdown();
         }
 
         #endregion Events
