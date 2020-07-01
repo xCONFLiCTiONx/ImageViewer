@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 
@@ -55,12 +56,15 @@ namespace ImageViewer
             {
                 mainWindow.CurrentImage = args[1];
                 mainWindow.OpenImage();
+
+                Dispatcher.Invoke(() => mainWindow.SetCurrentImage());
+                Dispatcher.Invoke(() => mainWindow.BuildImageList());
             }
 
             if (!mainWindow.IsActive)
             {
                 mainWindow.WindowState = WindowState.Minimized;
-                mainWindow.WindowState = WindowState.Maximized;
+                mainWindow.WindowState = WindowState.Normal;
             }
 
             return true;

@@ -27,7 +27,7 @@ namespace ImageViewer
         private Point start;
         private readonly string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tiff", ".webp" };
         public static string[] Args = Environment.GetCommandLineArgs();
-        List<string> ImageList = null;
+        List<string> ImageList = new List<string>();
         public string CurrentImage = null;
         FileSystemWatcher watcher;
         FileStream mediaStream;
@@ -42,7 +42,6 @@ namespace ImageViewer
         public MainWindow()
         {
             InitializeComponent();
-
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
@@ -122,7 +121,7 @@ namespace ImageViewer
 
         #region Image Control
 
-        private void SetCurrentImage(bool Reverse = false)
+        internal void SetCurrentImage(bool Reverse = false)
         {
             try
             {
@@ -166,7 +165,7 @@ namespace ImageViewer
             }
         }
 
-        private void BuildImageList()
+        internal void BuildImageList()
         {
             if (ImageList != null)
             {
