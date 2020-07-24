@@ -26,7 +26,6 @@ namespace ImageViewer
         private Point origin;
         private Point start;
         private readonly string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tiff", ".webp" };
-        public static string[] Args = Environment.GetCommandLineArgs();
         List<string> ImageList = new List<string>();
         public string CurrentImage = null;
         FileSystemWatcher watcher;
@@ -56,9 +55,9 @@ namespace ImageViewer
 
             EventSubs(true);
 
-            if (Args.Length > 1)
+            if (Environment.GetCommandLineArgs().Length > 1)
             {
-                CurrentImage = Args[1];
+                CurrentImage = Environment.GetCommandLineArgs()[1];
 
                 ImageFolderWatcher();
 
@@ -181,7 +180,7 @@ namespace ImageViewer
             IOrderedEnumerable<string> sortedList = Directory.GetFiles(Path.GetDirectoryName(CurrentImage), "*.*").OrderBy(str => Regex.Split(str.Replace(" ", ""), "([0-9]+)").Select(convert),
                 new EnumerableComparer<object>());
 
-            ImageList = sortedList.Where(item => extensions.Contains(Path.GetExtension(item))).ToList();
+            ImageList = sortedList.Where(item => extensions.Contains(Path.GetExtension(item).ToLower())).ToList();
 
             OpenImage();
         }
@@ -197,7 +196,7 @@ namespace ImageViewer
 
             ResetZoom();
 
-            using (mediaStream = new FileStream(CurrentImage, FileMode.Open, FileAccess.Read))
+            using (mediaStream = new FileStream(CurrentImage, FileMode.Open, FileAccess.Read, FileShare.None, 32767, true))
             {
                 if (Path.GetExtension(CurrentImage) == ".gif")
                 {
@@ -413,6 +412,19 @@ namespace ImageViewer
             Application.Current.Shutdown();
         }
 
+        private ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
+        }
+
         private void RotateButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -423,13 +435,20 @@ namespace ImageViewer
 
                 img.RotateFlip(RotateFlipType.Rotate90FlipNone);
 
+                Encoder myEncoder = Encoder.Quality;
+
+                EncoderParameters myEncoderParameters = new EncoderParameters(1);
+
+                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 90L);
+                myEncoderParameters.Param[0] = myEncoderParameter;
+
                 if (Path.GetExtension(CurrentImage).ToLower() == ".jpg")
                 {
-                    img.Save(CurrentImage, ImageFormat.Jpeg);
+                    img.Save(CurrentImage, GetEncoder(ImageFormat.Jpeg), myEncoderParameters);
                 }
                 else if (Path.GetExtension(CurrentImage).ToLower() == ".png")
                 {
-                    img.Save(CurrentImage, ImageFormat.Png);
+                    img.Save(CurrentImage, GetEncoder(ImageFormat.Png), myEncoderParameters);
                 }
                 else if (Path.GetExtension(CurrentImage).ToLower() == ".gif")
                 {
@@ -437,7 +456,7 @@ namespace ImageViewer
                 }
                 else if (Path.GetExtension(CurrentImage).ToLower() == ".bmp")
                 {
-                    img.Save(CurrentImage, ImageFormat.Bmp);
+                    img.Save(CurrentImage, GetEncoder(ImageFormat.Bmp), myEncoderParameters);
                 }
                 else if (Path.GetExtension(CurrentImage).ToLower() == ".ico")
                 {
@@ -445,7 +464,7 @@ namespace ImageViewer
                 }
                 else if (Path.GetExtension(CurrentImage).ToLower() == ".tiff")
                 {
-                    img.Save(CurrentImage, ImageFormat.Tiff);
+                    img.Save(CurrentImage, GetEncoder(ImageFormat.Tiff), myEncoderParameters);
                 }
                 else if (Path.GetExtension(CurrentImage).ToLower() == ".webp")
                 {
