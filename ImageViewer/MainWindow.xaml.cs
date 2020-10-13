@@ -25,7 +25,7 @@ namespace ImageViewer
         bool mediaPaused = false;
         private Point origin;
         private Point start;
-        private readonly string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tiff", ".webp" };
+        private readonly string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".tiff", ".tif", ".webp" };
         List<string> ImageList = new List<string>();
         public string CurrentImage = null;
         FileSystemWatcher watcher;
@@ -442,31 +442,33 @@ namespace ImageViewer
                 EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 90L);
                 myEncoderParameters.Param[0] = myEncoderParameter;
 
-                if (Path.GetExtension(CurrentImage).ToLower() == ".jpg")
+                string _currentImage = Path.GetExtension(CurrentImage).ToLower();
+
+                if (_currentImage == ".jpg" || _currentImage == ".jpeg" || _currentImage == ".jpe" || _currentImage == ".jif" || _currentImage == ".jfif" || _currentImage == ".jfi")
                 {
                     img.Save(CurrentImage, GetEncoder(ImageFormat.Jpeg), myEncoderParameters);
                 }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".png")
+                else if (_currentImage == ".png")
                 {
                     img.Save(CurrentImage, GetEncoder(ImageFormat.Png), myEncoderParameters);
                 }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".gif")
+                else if (_currentImage == ".gif")
                 {
                     MessageBox.Show("This program cannot save gif files. If you want to rotate this image and save it, use a program that is capable of properly saving gif files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".bmp")
+                else if (_currentImage == ".bmp")
                 {
                     img.Save(CurrentImage, GetEncoder(ImageFormat.Bmp), myEncoderParameters);
                 }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".ico")
+                else if (_currentImage == ".ico")
                 {
                     MessageBox.Show("This program cannot save icon files. If you want to rotate this image and save it, use a program that is capable of properly saving icon files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".tiff")
+                else if (_currentImage == ".tiff" || _currentImage == ".tif")
                 {
                     img.Save(CurrentImage, GetEncoder(ImageFormat.Tiff), myEncoderParameters);
                 }
-                else if (Path.GetExtension(CurrentImage).ToLower() == ".webp")
+                else if (_currentImage == ".webp")
                 {
                     MessageBox.Show("This program cannot save webp files. If you want to rotate this image and save it, use a program that is capable of properly saving webp files.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
