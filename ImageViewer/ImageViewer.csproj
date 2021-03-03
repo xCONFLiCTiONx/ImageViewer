@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AdminCheck.cs" />
     <Compile Include="BlurBehind.cs" />
+    <Compile Include="CheckDefaults.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="SetDefaults.cs" />
     <Compile Include="NaturalSorting.cs" />

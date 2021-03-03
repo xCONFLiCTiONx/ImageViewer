@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Windows;
 
@@ -17,22 +16,31 @@ namespace ImageViewer
         {
             if (Environment.GetCommandLineArgs().Length == 1)
             {
-                if (AdminCheck.IsAdministrator())
+                if (CheckDefaults.AssociationNeedSet())
                 {
-                    SetDefaults.FileAssociations.SetAssociation();
+                    if (AdminCheck.IsAdministrator())
+                    {
+                        SetDefaults.FileAssociations.SetAssociation();
 
-                    Process.Start("ms-settings:defaultapps");
+                        Process.Start("ms-settings:defaultapps");
 
-                    Environment.Exit(0);
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        using (Process proc = new Process())
+                        {
+                            proc.StartInfo.FileName = Assembly.GetEntryAssembly().Location;
+                            proc.StartInfo.Verb = "runas";
+                            proc.Start();
+                        }
+
+                        Environment.Exit(0);
+                    }
                 }
                 else
                 {
-                    using (Process proc = new Process())
-                    {
-                        proc.StartInfo.FileName = Assembly.GetEntryAssembly().Location;
-                        proc.StartInfo.Verb = "runas"; // run as admin
-                        proc.Start();
-                    }
+                    MessageBox.Show("Imageviwer is already associated with the common image types and ready to use. This program is not meant to be run directly. To use ImageViwer open file explorer and find an image and open the image directly. If the image is a common file type ImageViwer will open the image.", "ImageViewer", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     Environment.Exit(0);
                 }
