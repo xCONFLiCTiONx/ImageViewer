@@ -35,7 +35,7 @@ namespace ImageViewer
         /// <summary>
         /// Object used for comparing each element.
         /// </summary>
-        private IComparer<T> comp;
+        private readonly IComparer<T> comp;
 
 
         /// <summary>
@@ -53,13 +53,26 @@ namespace ImageViewer
                     bool left = leftIt.MoveNext();
                     bool right = rightIt.MoveNext();
 
-                    if (!(left || right)) return 0;
+                    if (!(left || right))
+                    {
+                        return 0;
+                    }
 
-                    if (!left) return -1;
-                    if (!right) return 1;
+                    if (!left)
+                    {
+                        return -1;
+                    }
+
+                    if (!right)
+                    {
+                        return 1;
+                    }
 
                     int itemResult = comp.Compare(leftIt.Current, rightIt.Current);
-                    if (itemResult != 0) return itemResult;
+                    if (itemResult != 0)
+                    {
+                        return itemResult;
+                    }
                 }
             }
         }

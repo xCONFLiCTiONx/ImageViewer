@@ -43,7 +43,7 @@ namespace ImageViewer
 
             private static void SetKeyValue(string keyPath, string value)
             {
-                using (var key = Registry.ClassesRoot.CreateSubKey(keyPath))
+                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(keyPath))
                 {
                     if (key.GetValue(null) as string != value)
                     {

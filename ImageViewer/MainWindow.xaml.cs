@@ -6,10 +6,8 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Permissions;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -23,18 +21,18 @@ namespace ImageViewer
     {
         #region Variables
 
-        string LastImage;
-        FrameworkElement element;
-        bool mediaPaused = false;
+        private string LastImage;
+        private FrameworkElement element;
+        private bool mediaPaused = false;
         private Point origin;
         private Point start;
         private readonly string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".jpe", ".jif", ".jfif", ".jfi", ".png", ".tiff", ".tif", ".webp" };
-        List<string> ImageList = new List<string>();
+        private List<string> ImageList = new List<string>();
         public string CurrentImage = null;
-        FileSystemWatcher watcher;
-        FileStream mediaStream;
-        Bitmap bitmap;
-        BitmapSource bitmapSource;
+        private FileSystemWatcher watcher;
+        private FileStream mediaStream;
+        private Bitmap bitmap;
+        private BitmapSource bitmapSource;
 
         #endregion Variables
 
@@ -104,7 +102,7 @@ namespace ImageViewer
 
         private void OnChanged(object source, FileSystemEventArgs e)
         {
-            var ext = (Path.GetExtension(e.FullPath) ?? string.Empty).ToLower();
+            string ext = (Path.GetExtension(e.FullPath) ?? string.Empty).ToLower();
 
             if (extensions.Any(ext.Equals))
             {
@@ -181,8 +179,8 @@ namespace ImageViewer
             int softResultWeight = 0;
             while (iA < strA.Length && iB < strB.Length)
             {
-                bool isDigitA = Char.IsDigit(strA[iA]);
-                bool isDigitB = Char.IsDigit(strB[iB]);
+                bool isDigitA = char.IsDigit(strA[iA]);
+                bool isDigitB = char.IsDigit(strB[iB]);
                 if (isDigitA != isDigitB)
                 {
                     return cmp.Compare(strA, iA, strB, iB, options);
@@ -191,8 +189,16 @@ namespace ImageViewer
                 {
                     int jA = iA + 1;
                     int jB = iB + 1;
-                    while (jA < strA.Length && !Char.IsDigit(strA[jA])) jA++;
-                    while (jB < strB.Length && !Char.IsDigit(strB[jB])) jB++;
+                    while (jA < strA.Length && !char.IsDigit(strA[jA]))
+                    {
+                        jA++;
+                    }
+
+                    while (jB < strB.Length && !char.IsDigit(strB[jB]))
+                    {
+                        jB++;
+                    }
+
                     int cmpResult = cmp.Compare(strA, iA, jA - iA, strB, iB, jB - iB, options);
                     if (cmpResult != 0)
                     {
@@ -217,21 +223,37 @@ namespace ImageViewer
                 }
                 else
                 {
-                    char zeroA = (char)(strA[iA] - (int)Char.GetNumericValue(strA[iA]));
-                    char zeroB = (char)(strB[iB] - (int)Char.GetNumericValue(strB[iB]));
+                    char zeroA = (char)(strA[iA] - (int)char.GetNumericValue(strA[iA]));
+                    char zeroB = (char)(strB[iB] - (int)char.GetNumericValue(strB[iB]));
                     int jA = iA;
                     int jB = iB;
-                    while (jA < strA.Length && strA[jA] == zeroA) jA++;
-                    while (jB < strB.Length && strB[jB] == zeroB) jB++;
+                    while (jA < strA.Length && strA[jA] == zeroA)
+                    {
+                        jA++;
+                    }
+
+                    while (jB < strB.Length && strB[jB] == zeroB)
+                    {
+                        jB++;
+                    }
+
                     int resultIfSameLength = 0;
                     do
                     {
-                        isDigitA = jA < strA.Length && Char.IsDigit(strA[jA]);
-                        isDigitB = jB < strB.Length && Char.IsDigit(strB[jB]);
-                        int numA = isDigitA ? (int)Char.GetNumericValue(strA[jA]) : 0;
-                        int numB = isDigitB ? (int)Char.GetNumericValue(strB[jB]) : 0;
-                        if (isDigitA && (char)(strA[jA] - numA) != zeroA) isDigitA = false;
-                        if (isDigitB && (char)(strB[jB] - numB) != zeroB) isDigitB = false;
+                        isDigitA = jA < strA.Length && char.IsDigit(strA[jA]);
+                        isDigitB = jB < strB.Length && char.IsDigit(strB[jB]);
+                        int numA = isDigitA ? (int)char.GetNumericValue(strA[jA]) : 0;
+                        int numB = isDigitB ? (int)char.GetNumericValue(strB[jB]) : 0;
+                        if (isDigitA && (char)(strA[jA] - numA) != zeroA)
+                        {
+                            isDigitA = false;
+                        }
+
+                        if (isDigitB && (char)(strB[jB] - numB) != zeroB)
+                        {
+                            isDigitB = false;
+                        }
+
                         if (isDigitA && isDigitB)
                         {
                             if (numA != numB && resultIfSameLength == 0)
@@ -313,7 +335,10 @@ namespace ImageViewer
                 Application.Current.Shutdown();
             }
 
-            if (CurrentImage == LastImage) return;
+            if (CurrentImage == LastImage)
+            {
+                return;
+            }
 
             ResetZoom();
 
@@ -527,9 +552,9 @@ namespace ImageViewer
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             EventSubs(false);
-            this.Opacity = 0;
-            this.Hide();
-            this.ShowInTaskbar = false;
+            Opacity = 0;
+            Hide();
+            ShowInTaskbar = false;
             Application.Current.Shutdown();
         }
 
@@ -618,7 +643,10 @@ namespace ImageViewer
         private void ZoomIn(bool isButton)
         {
             if (element.TransformToAncestor(border)
-                  .TransformBounds(new Rect(element.RenderSize)).Width >= 20000) return;
+                  .TransformBounds(new Rect(element.RenderSize)).Width >= 20000)
+            {
+                return;
+            }
 
             Matrix m = element.RenderTransform.Value;
 
@@ -637,7 +665,10 @@ namespace ImageViewer
         private void ZoomOut(bool isButton)
         {
             if (element.TransformToAncestor(border)
-          .TransformBounds(new Rect(element.RenderSize)).Width <= 50) return;
+          .TransformBounds(new Rect(element.RenderSize)).Width <= 50)
+            {
+                return;
+            }
 
             Matrix m = element.RenderTransform.Value;
 
@@ -684,14 +715,20 @@ namespace ImageViewer
             if (e.Delta > 0)
             {
                 if (element.TransformToAncestor(border)
-               .TransformBounds(new Rect(element.RenderSize)).Width >= 20000) return;
+               .TransformBounds(new Rect(element.RenderSize)).Width >= 20000)
+                {
+                    return;
+                }
 
                 m.Scale(1.1, 1.1);
             }
             else
             {
                 if (element.TransformToAncestor(border)
-       .TransformBounds(new Rect(element.RenderSize)).Width <= 50) return;
+       .TransformBounds(new Rect(element.RenderSize)).Width <= 50)
+                {
+                    return;
+                }
 
                 m.Scale(1 / 1.1, 1 / 1.1);
             }
@@ -702,7 +739,11 @@ namespace ImageViewer
         // ImagePlayer
         private void MouseLeftButtonDownElements(MouseButtonEventArgs e)
         {
-            if (element.IsMouseCaptured) return;
+            if (element.IsMouseCaptured)
+            {
+                return;
+            }
+
             element.CaptureMouse();
 
             start = e.GetPosition(border);
@@ -716,7 +757,11 @@ namespace ImageViewer
 
         private void MouseMoveElements(MouseEventArgs e)
         {
-            if (!element.IsMouseCaptured) return;
+            if (!element.IsMouseCaptured)
+            {
+                return;
+            }
+
             Point p = e.MouseDevice.GetPosition(border);
 
             Matrix m = element.RenderTransform.Value;
@@ -769,7 +814,9 @@ namespace ImageViewer
             if (disposing)
             {
                 if (watcher != null)
+                {
                     watcher.Dispose();
+                }
             }
         }
 

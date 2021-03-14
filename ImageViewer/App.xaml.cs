@@ -58,7 +58,7 @@ namespace ImageViewer
 
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
-            MainWindow mainWindow = this.MainWindow as MainWindow;
+            MainWindow mainWindow = MainWindow as MainWindow;
 
             if (args.Count > 1)
             {
