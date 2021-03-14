@@ -62,7 +62,7 @@ namespace ImageViewer
 
             if (args.Count > 1)
             {
-                mainWindow.CurrentImage = args[1];
+                mainWindow.CurrentImage = "\"" + args[1] + "\"";
                 mainWindow.OpenImage();
 
                 Dispatcher.Invoke(() => mainWindow.SetCurrentImage());
