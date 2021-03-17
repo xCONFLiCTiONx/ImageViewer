@@ -7,35 +7,24 @@ namespace ImageViewer
     {
         internal static bool AssociationNeedSet()
         {
-            string[] extensions = { ".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tiff" };
-
-            foreach (string ext in extensions)
+            try
             {
-                if (ValuesExist(ext, "ImageViewer"))
+                if (ValuesExist(@"Software\ImageViewer", @"xCONFLiCTiONx\ImageViewer"))
                 {
-                    return false;
+                    return true;
                 }
             }
-
-            if (ValuesExist("ImageViewer", "ImageFile"))
+            catch (System.Exception ex)
             {
-                return false;
-            }
-            if (ValuesExist(@"ImageViewer\DefaultIcon", "\"" + Application.ExecutablePath + "\""))
-            {
-                return false;
-            }
-            if (ValuesExist(@"ImageViewer\shell\open\command", "\"" + Application.ExecutablePath + "\" \"%1\""))
-            {
-                return false;
+                MessageBox.Show(ex.Message);
             }
 
-            return true;
+            return false;
         }
 
         internal static bool ValuesExist(string keyPath, string value)
         {
-            using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(keyPath))
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(keyPath))
             {
                 if (key.GetValue(null) as string != value)
                 {

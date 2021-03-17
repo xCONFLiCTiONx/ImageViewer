@@ -38,16 +38,31 @@ namespace ImageViewer
                 SetKeyValue(@"ImageViewer\DefaultIcon", "\"" + Application.ExecutablePath + "\"");
                 SetKeyValue(@"ImageViewer\shell\open\command", "\"" + Application.ExecutablePath + "\" \"%1\"");
 
+                SetKeyValue(@"Software\ImageViewer", @"xCONFLiCTiONx\ImageViewer", true);
+
                 NativeMethods.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_FLUSH, IntPtr.Zero, IntPtr.Zero);
             }
 
-            private static void SetKeyValue(string keyPath, string value)
+            private static void SetKeyValue(string keyPath, string value, bool installation = false)
             {
-                using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(keyPath))
+                if (!installation)
                 {
-                    if (key.GetValue(null) as string != value)
+                    using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(keyPath))
                     {
-                        key.SetValue(null, value);
+                        if (key.GetValue(null) as string != value)
+                        {
+                            key.SetValue(null, value);
+                        }
+                    }
+                }
+                else
+                {
+                    using (RegistryKey key = Registry.CurrentUser.CreateSubKey(keyPath))
+                    {
+                        if (key.GetValue(null) as string != value)
+                        {
+                            key.SetValue(null, value);
+                        }
                     }
                 }
             }

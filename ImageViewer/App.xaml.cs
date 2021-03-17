@@ -16,7 +16,7 @@ namespace ImageViewer
         {
             if (Environment.GetCommandLineArgs().Length == 1)
             {
-                if (CheckDefaults.AssociationNeedSet())
+                if (!CheckDefaults.AssociationNeedSet())
                 {
                     if (AdminCheck.IsAdministrator())
                     {
