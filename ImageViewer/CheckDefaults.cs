@@ -9,7 +9,7 @@ namespace ImageViewer
         {
             try
             {
-                if (ValuesExist(@"Software\ImageViewer", @"xCONFLiCTiONx\ImageViewer"))
+                if (ValuesExist(@"Software\ImageViewer", @"ImageViewer"))
                 {
                     return true;
                 }

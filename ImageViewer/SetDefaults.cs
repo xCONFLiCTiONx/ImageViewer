@@ -38,7 +38,7 @@ namespace ImageViewer
                 SetKeyValue(@"ImageViewer\DefaultIcon", "\"" + Application.ExecutablePath + "\"");
                 SetKeyValue(@"ImageViewer\shell\open\command", "\"" + Application.ExecutablePath + "\" \"%1\"");
 
-                SetKeyValue(@"Software\ImageViewer", @"xCONFLiCTiONx\ImageViewer", true);
+                SetKeyValue(@"Software\ImageViewer", @"ImageViewer", true);
 
                 NativeMethods.SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_FLUSH, IntPtr.Zero, IntPtr.Zero);
             }
