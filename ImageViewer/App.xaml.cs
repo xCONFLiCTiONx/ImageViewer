@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 
 namespace ImageViewer
@@ -50,8 +52,8 @@ namespace ImageViewer
             {
                 App app = new App();
                 app.InitializeComponent();
-                app.Run();
 
+                app.Run();
                 SingleInstance<App>.Cleanup();
             }
         }
@@ -62,11 +64,10 @@ namespace ImageViewer
 
             if (args.Count > 1)
             {
-                mainWindow.CurrentImage = "\"" + args[1] + "\"";
+                mainWindow.CurrentImage = Environment.GetCommandLineArgs()[1];
                 mainWindow.OpenImage();
 
                 Dispatcher.Invoke(() => mainWindow.SetCurrentImage());
-                Dispatcher.Invoke(() => mainWindow.BuildImageList());
             }
 
             if (!mainWindow.IsActive)

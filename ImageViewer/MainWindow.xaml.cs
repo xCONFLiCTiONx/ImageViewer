@@ -80,7 +80,7 @@ namespace ImageViewer
 
         #region FileSystemWatcher
 
-        private void ImageFolderWatcher()
+        internal void ImageFolderWatcher()
         {
             watcher = new FileSystemWatcher
             {

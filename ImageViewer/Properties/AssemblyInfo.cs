@@ -22,4 +22,4 @@ using System.Windows;
 [assembly: AssemblyVersion("1.9.0.0")]
 [assembly: AssemblyFileVersion("1.9.0.0")]
 [assembly: NeutralResourcesLanguage("en-US")]
-
+[assembly: Guid("376DA38D-B32E-42EA-B05A-CC69125564E8")]
