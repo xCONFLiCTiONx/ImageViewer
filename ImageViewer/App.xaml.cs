@@ -64,10 +64,9 @@ namespace ImageViewer
 
             if (args.Count > 1)
             {
-                mainWindow.CurrentImage = Environment.GetCommandLineArgs()[1];
-                mainWindow.OpenImage();
-
-                Dispatcher.Invoke(() => mainWindow.SetCurrentImage());
+                Dispatcher.Invoke(() => mainWindow.CurrentImage = args[1]);
+                Dispatcher.Invoke(() => mainWindow.ImageFolderWatcher());
+                Dispatcher.Invoke(() => mainWindow.BuildImageList());
             }
 
             if (!mainWindow.IsActive)
