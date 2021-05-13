@@ -101,6 +101,10 @@
                 </MediaElement>
             </Grid>
         </Border>
+        <!-- FULLSCREEN -->
+        <Button x:Name="MaximizeButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Maximize" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="0,0,82,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="MaximizeButton_Click">
+            <Path Fill="{Binding ElementName=MaximizeButton, Path=Foreground}" Margin="0,0,0,0" Width="18" Data="{StaticResource MaximizeIcon}" Stretch="Uniform"/>
+        </Button>
         <!-- MINIMIZE -->
         <Button x:Name="MinimizeButton" Style="{StaticResource CustomButton}" Height="40" Width="40" ToolTip="Minimize" ToolTipService.InitialShowDelay="1000" ToolTipService.ShowDuration="2500" ToolTipService.BetweenShowDelay="0" Cursor="Hand" Margin="0,0,41,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="MinimizeButton_Click">
             <Path Fill="{Binding ElementName=MinimizeButton, Path=Foreground}" Margin="0,15,0,0" Width="18" Data="{StaticResource MinimizeIcon}" Stretch="Uniform"/>

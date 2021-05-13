@@ -46,8 +46,8 @@ namespace ImageViewer
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
-            mainWindow.MaxHeight = (SystemParameters.PrimaryScreenHeight);
-            mainWindow.MaxWidth = (SystemParameters.PrimaryScreenWidth);
+            mainWindow.MaxHeight = (SystemParameters.WorkArea.Height);
+            mainWindow.MaxWidth = (SystemParameters.WorkArea.Width);
             mainWindow.Height = mainWindow.MaxHeight;
             mainWindow.Width = mainWindow.MaxWidth;
 
@@ -519,6 +519,24 @@ namespace ImageViewer
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (mainWindow.MaxHeight == SystemParameters.WorkArea.Height)
+            {
+                mainWindow.MaxHeight = (SystemParameters.PrimaryScreenHeight);
+                mainWindow.MaxWidth = (SystemParameters.PrimaryScreenWidth);
+                mainWindow.Height = mainWindow.MaxHeight;
+                mainWindow.Width = mainWindow.MaxWidth;
+            }
+            else
+            {
+                mainWindow.MaxHeight = (SystemParameters.WorkArea.Height);
+                mainWindow.MaxWidth = (SystemParameters.WorkArea.Width);
+                mainWindow.Height = mainWindow.MaxHeight;
+                mainWindow.Width = mainWindow.MaxWidth;
+            }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
